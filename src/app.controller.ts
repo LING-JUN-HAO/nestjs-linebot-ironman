@@ -33,7 +33,10 @@ export class AppController {
    */
   @Post('/webhook')
   async handleWebhook(@Body() body: WebhookRequestBody): Promise<string> {
-    console.log('Webhook 從 line platform 接收到的資訊:', body);
+    console.log(
+      'Webhook 從 line platform 接收到的資訊:',
+      JSON.stringify(body, null, 2),
+    );
     const { events } = body;
 
     // 事件處理器映射表
