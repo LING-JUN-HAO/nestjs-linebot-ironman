@@ -5,6 +5,8 @@ import {
   messagingApi,
   MessageEvent,
   WebhookEvent,
+  FollowEvent,
+  UnfollowEvent,
 } from '@line/bot-sdk';
 import { LINE_CONFIG } from '../config/line.config';
 
@@ -42,33 +44,74 @@ export class AppController {
     // 事件處理器映射表
     const eventHandler = {
       message: (event) => this.handleMessageEvent(event),
+      follow: (event) => this.handleFollowEvent(event),
+      unfollow: (event) => this.handleUnfollowEvent(event),
     } satisfies Partial<HandlerMap>;
 
     // 逐項處理每一個事件
     for (const event of events) {
       const { type } = event;
-      if (type === 'message') {
-        await eventHandler[type](event);
-      }
+      const handler = eventHandler[type];
+      if (handler) await handler(event);
     }
 
     return 'Webhook processed successfully';
   }
 
   /**
-   * 處理訊息事件
-   * @param event 訊息事件物件，包含用戶訊息內容(text)和回覆憑證(replyToken)
+   * 用戶首次加入好友或解除封鎖官方帳號時觸發
+   * @param event 加入好友事件
    */
-  private async handleMessageEvent(event: MessageEvent): Promise<void> {
+  private async handleFollowEvent(event: FollowEvent): Promise<void> {
     const { replyToken } = event;
-    console.log('收到訊息事件', event);
-    console.log('訊息憑證(身分證):', replyToken);
     await this.lineClient.replyMessage({
       replyToken,
       messages: [
         {
           type: 'text',
-          text: 'hello world',
+          text: '恭喜你加入我們的官方帳號！',
+        },
+      ],
+    });
+  }
+
+  /**
+   * 用戶封鎖或刪除官方帳號時觸發
+   * @param event 取消好友事件
+   */
+  private async handleUnfollowEvent(event: UnfollowEvent): Promise<void> {
+    // 這裡可以記錄用戶取消關注的事件
+    console.log(`用戶 ${event.source.userId} 已取消關注官方帳號。`);
+  }
+
+  /**
+   * 用戶發送任何類型的訊息時觸發
+   * @param event 訊息事件
+   */
+  private async handleMessageEvent(event: MessageEvent): Promise<void> {
+    const { replyToken } = event;
+    await this.lineClient.replyMessage({
+      replyToken,
+      messages: [
+        {
+          type: 'text',
+          text: '這是訊息事件！- 1',
+        },
+        {
+          type: 'text',
+          text: '這是訊息事件！- 2',
+        },
+        {
+          type: 'text',
+          text: '這是訊息事件！- 3',
+        },
+        {
+          type: 'text',
+          text: '這是訊息事件！- 4',
+        },
+        {
+          type: 'text',
+          text: '這是訊息事件！ - 5',
         },
       ],
     });
