@@ -7,9 +7,9 @@ export const LINE_CONFIG = 'LINE_CONFIG';
 // 註冊的常數(這邊讀取的是.env 環境變數裡面的內容)
 const lineConfig = (configService: ConfigService): ClientConfig => ({
   channelAccessToken: configService.getOrThrow<string>(
-    'LINE_CHANNEL_ACCESS_TOKEN',
+    'line.channelAccessToken',
   ),
-  channelSecret: configService.getOrThrow<string>('LINE_CHANNEL_SECRET'),
+  channelSecret: configService.getOrThrow<string>('line.channelSecret'),
 });
 
 // 匯出成 NestJS Provider 供依賴注入系統使用(簡單來說就是 Nest 使用要用這種註冊方式)
