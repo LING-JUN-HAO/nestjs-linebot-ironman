@@ -11,24 +11,3 @@ export type MessageEventHandlerMap = {
     event: Extract<EventMessage, { type: K }>,
   ) => Promise<string>; // 改成使用 Promise 處理非同步操作
 };
-
-export interface CurrentWeatherResponse {
-  cod: number;
-  message?: string;
-  main: {
-    temp: number;
-    feels_like: number;
-    humidity: number;
-  };
-  weather: {
-    id: number;
-    main: string;
-    description: string;
-    icon: string;
-  }[];
-  name: string;
-  coord: {
-    lon: number;
-    lat: number;
-  };
-}

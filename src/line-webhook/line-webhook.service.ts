@@ -7,38 +7,33 @@ import {
   WebhookRequestBody,
 } from '@line/bot-sdk';
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { LINE_CONFIG } from 'config/line.config';
+import { LINE_CONFIG } from 'src/line-webhook/line-webhook.provider';
 import {
-  CurrentWeatherResponse,
   MessageEventHandlerMap,
   WebhookEventHandlerMap,
 } from './line-webhook.types';
+import { WeatherService } from 'src/weather/weather.service';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { PinoLogger } from 'nestjs-pino';
-import { catchError, firstValueFrom, throwError } from 'rxjs';
-import { AxiosError } from 'axios';
-import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class LineWebhookService {
   private readonly lineClient: messagingApi.MessagingApiClient;
-  private readonly WEATHER_API_BASE_URL: string;
-  private readonly WEATHER_API_KEY: string;
+  private readonly blobClient: messagingApi.MessagingApiBlobClient;
 
   // 根據配置檔案初始化 LINE Messaging API 客戶端
   constructor(
     @Inject(LINE_CONFIG) private readonly lineConfig: ClientConfig,
-    private readonly httpService: HttpService,
     private readonly logger: PinoLogger,
-    private readonly configService: ConfigService,
+    private readonly weatherService: WeatherService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {
     this.lineClient = new messagingApi.MessagingApiClient({
       channelAccessToken: this.lineConfig.channelAccessToken,
     });
-    this.WEATHER_API_BASE_URL =
-      this.configService.getOrThrow<string>('weather.baseUrl');
-    this.WEATHER_API_KEY =
-      this.configService.getOrThrow<string>('weather.apiKey');
+    this.blobClient = new messagingApi.MessagingApiBlobClient({
+      channelAccessToken: this.lineConfig.channelAccessToken,
+    });
     this.logger.setContext(LineWebhookService.name);
   }
 
@@ -92,8 +87,33 @@ export class LineWebhookService {
       text: async (message) => `📝 收到文字訊息：${message.text}`,
       sticker: async (message) =>
         `🎭 收到貼圖訊息 => 貼圖包編號：${message.stickerId}-貼圖編號：${message.packageId}}`,
-      image: async (message) =>
-        `🖼️ 收到圖片訊息 => 訊息編號：${message.id}-圖片來源：${message.contentProvider.type}`,
+      image: async (message) => {
+        const { id, contentProvider } = message;
+        const provideType = contentProvider.type;
+        const defaultMsg = `🖼️ 收到圖片訊息 => 訊息編號：${id}-圖片來源：${provideType}`;
+
+        // 檢查來源必須來自 Line 平台
+        if (provideType !== 'line') return defaultMsg;
+
+        // 原始型別 Readable Stream
+        const stream = await this.blobClient.getMessageContent(id);
+
+        // 上傳所需的參數
+        const cloudinaryPayload = {
+          stream,
+          public_id: id,
+        };
+
+        // 處理 cloudinary 上傳的部分
+        const cloudinarySuccessResult =
+          await this.cloudinaryService.uploadImage(cloudinaryPayload);
+        const { bytes, format, resource_type, url } = cloudinarySuccessResult;
+
+        // 組合檔案資訊訊息
+        const sizeInKB = (bytes / 1024).toFixed(2);
+        const fileMsg = `📙 檔案大小：${sizeInKB} KB | 副檔名：${format} | 資源類型：${resource_type} | url：${url}`;
+        return `${defaultMsg}\n\n${fileMsg}`;
+      },
       video: async (message) =>
         `🎬 收到影片訊息 => 訊息編號：${message.id}-影片來源：${message.contentProvider.type}`,
       audio: async (message) =>
@@ -102,11 +122,13 @@ export class LineWebhookService {
         const { address, longitude, latitude } = message;
         const defaultMsg = `📍 收到位置訊息\n🏠 地址：${address}\n🧭 精度：${longitude}\n🧭 緯度：${latitude}`;
 
-        const weatherData: CurrentWeatherResponse =
-          await this.#fetchWeatherData(latitude, longitude);
-        const weatherInfoText = this.#formateWeatherInfo(weatherData);
+        // 透過 weather 服務呼叫取得第三方天氣服務的回傳字串
+        const weatherData = await this.weatherService.getWeatherByCoordinates(
+          latitude,
+          longitude,
+        );
 
-        return `${defaultMsg}\n\n${weatherInfoText}`;
+        return `${defaultMsg}\n\n${weatherData}`;
       },
     } satisfies Partial<MessageEventHandlerMap>;
 
@@ -118,54 +140,5 @@ export class LineWebhookService {
       replyToken: event.replyToken,
       messages: [{ type: 'text', text: replyMessage }],
     });
-  }
-
-  /**
-   * 根據用戶發送的地理位置查詢天氣資訊
-   * @param latitude 緯度
-   * @param longitude 經度
-   */
-  async #fetchWeatherData(latitude: number, longitude: number) {
-    // 查詢參數
-    const queryParams = {
-      lat: latitude,
-      lon: longitude,
-      appid: this.WEATHER_API_KEY,
-      units: 'metric',
-      lang: 'zh_tw',
-    };
-
-    // 接收處理完的天氣數據
-    const responseData = await firstValueFrom(
-      this.httpService
-        .get(this.WEATHER_API_BASE_URL, { params: queryParams })
-        .pipe(
-          catchError((err: AxiosError) => {
-            return throwError(
-              () =>
-                new Error(
-                  `Weather API request failed: ${JSON.stringify(err.response?.data)}`,
-                ),
-            );
-          }),
-        ),
-    );
-
-    return responseData.data;
-  }
-
-  /**
-   * 將天氣數據格式化為易讀的文字資訊
-   * @param weatherData 從天氣 API 獲取的天氣數據
-   * @returns  格式化的天氣資訊
-   */
-  #formateWeatherInfo(weatherData: CurrentWeatherResponse) {
-    const locationName = weatherData.name || '該區域';
-    const temp = weatherData.main.temp;
-    const feelsLike = weatherData.main.feels_like;
-    const humidity = weatherData.main.humidity;
-    const description = weatherData.weather[0]?.description || '未知天氣狀況';
-
-    return `🌤️ ${locationName} 的天氣：\n🌡️ 溫度：${temp}°C (體感：${feelsLike}°C)\n💧 濕度：${humidity}%\n☁️ 狀況：${description}`;
   }
 }

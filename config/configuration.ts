@@ -17,6 +17,13 @@ const configSchema = Joi.object({
     apiKey: Joi.string().required(), // 字串且必填
   }).required(), // 必填
 
+  // Cloudinary 相關設定
+  cloudinary: Joi.object({
+    cloudName: Joi.string().required(), // Cloudinary Cloud Name (字串且必填)
+    apiKey: Joi.string().required(), // Cloudinary API Key (字串且必填)
+    apiSecret: Joi.string().required(), // Cloudinary API Secret (字串且必填)
+  }).required(), // 必填
+
   // 伺服器基本設定
   nodeEnv: Joi.string()
     .valid('development', 'production', 'test') // 僅能從這些值中選擇
@@ -42,6 +49,13 @@ export default () => {
     weather: {
       baseUrl: process.env.WEATHER_BASE_URL,
       apiKey: process.env.WEATHER_API_KEY,
+    },
+
+    // Cloudinary 相關設定
+    cloudinary: {
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+      apiKey: process.env.CLOUDINARY_API_KEY,
+      apiSecret: process.env.CLOUDINARY_API_SECRET,
     },
 
     // 伺服器基本設定
