@@ -7,14 +7,15 @@ import {
   WebhookRequestBody,
 } from '@line/bot-sdk';
 import { Inject, Injectable } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import { LINE_CONFIG } from 'src/line-webhook/line-webhook.provider';
+import { WeatherService } from 'src/weather/weather.service';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { LineMessageService } from 'src/line-message/line-message.service';
 import {
   MessageEventHandlerMap,
   WebhookEventHandlerMap,
 } from './line-webhook.types';
-import { WeatherService } from 'src/weather/weather.service';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class LineWebhookService {
@@ -27,6 +28,7 @@ export class LineWebhookService {
     private readonly logger: PinoLogger,
     private readonly weatherService: WeatherService,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly lineMessageService: LineMessageService,
   ) {
     this.lineClient = new messagingApi.MessagingApiClient({
       channelAccessToken: this.lineConfig.channelAccessToken,
@@ -84,61 +86,56 @@ export class LineWebhookService {
    */
   private async handleMessageEvent(event: MessageEvent): Promise<void> {
     const messageEventHandlerMap = {
-      text: async (message) => `📝 收到文字訊息：${message.text}`,
-      sticker: async (message) =>
-        `🎭 收到貼圖訊息 => 貼圖包編號：${message.stickerId}-貼圖編號：${message.packageId}}`,
-      image: async (message) => {
-        const { id, contentProvider } = message;
-        const provideType = contentProvider.type;
-        const defaultMsg = `🖼️ 收到圖片訊息 => 訊息編號：${id}-圖片來源：${provideType}`;
-
-        // 檢查來源必須來自 Line 平台
-        if (provideType !== 'line') return defaultMsg;
-
-        // 原始型別 Readable Stream
-        const stream = await this.blobClient.getMessageContent(id);
-
-        // 上傳所需的參數
-        const cloudinaryPayload = {
-          stream,
-          public_id: id,
-        };
-
-        // 處理 cloudinary 上傳的部分
-        const cloudinarySuccessResult =
-          await this.cloudinaryService.uploadImage(cloudinaryPayload);
-        const { bytes, format, resource_type, url } = cloudinarySuccessResult;
-
-        // 組合檔案資訊訊息
-        const sizeInKB = (bytes / 1024).toFixed(2);
-        const fileMsg = `📙 檔案大小：${sizeInKB} KB | 副檔名：${format} | 資源類型：${resource_type} | url：${url}`;
-        return `${defaultMsg}\n\n${fileMsg}`;
-      },
-      video: async (message) =>
-        `🎬 收到影片訊息 => 訊息編號：${message.id}-影片來源：${message.contentProvider.type}`,
-      audio: async (message) =>
-        `🎵 收到音檔訊息 => 訊息編號：${message.id}-時長：${message.duration} ms-音頻來源：${message.contentProvider.type}`,
-      location: async (message) => {
-        const { address, longitude, latitude } = message;
-        const defaultMsg = `📍 收到位置訊息\n🏠 地址：${address}\n🧭 精度：${longitude}\n🧭 緯度：${latitude}`;
-
-        // 透過 weather 服務呼叫取得第三方天氣服務的回傳字串
-        const weatherData = await this.weatherService.getWeatherByCoordinates(
-          latitude,
-          longitude,
-        );
-
-        return `${defaultMsg}\n\n${weatherData}`;
-      },
+      text: (message) =>
+        this.lineMessageService.createTextMessage({
+          text: message.text,
+          emoji: {
+            index: 0,
+            productId: '5ac21c4e031a6752fb806d5b',
+            emojiId: '006',
+          },
+        }),
+      sticker: () =>
+        this.lineMessageService.createStickerMessage({
+          packageId: '6359',
+          stickerId: '11069851',
+        }),
+      image: () =>
+        this.lineMessageService.createImageMessage({
+          previewImageUrl:
+            'https://res.cloudinary.com/dseg0uwc9/image/upload/v1752220509/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/569400594147311960.jpg',
+          originalContentUrl:
+            'https://res.cloudinary.com/dseg0uwc9/image/upload/v1752220509/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/569400594147311960.jpg',
+        }),
+      video: () =>
+        this.lineMessageService.createVideoMessage({
+          previewImageUrl:
+            'https://res.cloudinary.com/dseg0uwc9/image/upload/e_improve,w_300,h_600,c_thumb,g_auto/v1752220479/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/569400541533438471.jpg',
+          originalContentUrl:
+            'https://res.cloudinary.com/dseg0uwc9/video/upload/v1753430100/test_video_fyraxr.mp4',
+        }),
+      audio: () =>
+        this.lineMessageService.createAudioMessage({
+          originalContentUrl:
+            'https://res.cloudinary.com/dseg0uwc9/video/upload/v1740070405/%E9%90%B5%E4%BA%BA%E8%B3%BD%E8%A6%81%E5%A4%9A%E4%B9%85_pgkjr2.m4a',
+          duration: 11000,
+        }),
+      location: () =>
+        this.lineMessageService.createLocationMessage({
+          title: '東海小確幸黑糖鮮奶波霸（東海總店）',
+          address: '434台中市龍井區台灣大道五段3巷66號',
+          latitude: 24.1815183,
+          longitude: 120.5899484,
+        }),
     } satisfies Partial<MessageEventHandlerMap>;
 
-    let replyMessage = '✨ 感謝你的訊息，我們已經收到了！';
+    let replyMessage;
     const handler = messageEventHandlerMap[event.message.type];
-    if (handler) replyMessage = await handler(event.message);
+    if (handler) replyMessage = handler(event.message);
 
     await this.lineClient.replyMessage({
       replyToken: event.replyToken,
-      messages: [{ type: 'text', text: replyMessage }],
+      messages: [replyMessage],
     });
   }
 }
