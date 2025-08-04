@@ -1,3 +1,5 @@
+import { Sender, QuickReplyItem } from '@line/bot-sdk';
+
 /**
  * LINE Emoji IDs(可用 ID：001 ~ 009)
  *
@@ -40,4 +42,6 @@ export interface TextMessageReq {
     productId: ProjectIds[number];
     emojiId: Emojis[number];
   };
+  sender?: Sender;
+  quickReplyItems?: Omit<QuickReplyItem, 'type'>[];
 }

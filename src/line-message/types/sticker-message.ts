@@ -12,6 +12,8 @@
  * - LINE Characters: Pretty Phrases（日文: ゆる敬語★LINEキャラクターズ）— 8515
  */
 
+import { QuickReplyItem, Sender } from '@line/bot-sdk';
+
 export const stickerIds = [
   {
     packageId: '446',
@@ -66,5 +68,7 @@ export type StickerMessageReq = {
   [K in keyof StickerMap]: {
     packageId: K;
     stickerId: StickerMap[K][number];
+    sender?: Sender;
+    quickReplyItems?: Omit<QuickReplyItem, 'type'>[];
   };
 }[keyof StickerMap];
