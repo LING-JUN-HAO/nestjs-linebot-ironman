@@ -4,3 +4,8 @@ export * from './image-message';
 export * from './video-message';
 export * from './audio-message';
 export * from './location-message';
+export * from './template-button-message';
+export * from './common-message';
+export * from './template-confirm-message';
+export * from './template-carousel-message';
+export * from './template-imageCarousel-message';

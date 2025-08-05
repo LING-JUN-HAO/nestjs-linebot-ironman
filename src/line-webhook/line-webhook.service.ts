@@ -86,8 +86,148 @@ export class LineWebhookService {
    */
   private async handleMessageEvent(event: MessageEvent): Promise<void> {
     const messageEventHandlerMap = {
-      text: (message) =>
-        this.lineMessageService.createTextMessage({
+      text: (message) => {
+        const { text } = message;
+        if (text === 'button') {
+          return this.lineMessageService.createTemplateButtonMessage({
+            altText: '按鈕小精靈通知',
+            thumbnailImageUrl:
+              'https://res.cloudinary.com/dseg0uwc9/image/upload/v1753953684/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/dog_icon_grxcsl.jpg',
+            title: '標題',
+            text: '按鈕小精靈出來吧',
+            sender: {
+              name: '狗狗助理 v2',
+              iconUrl:
+                'https://res.cloudinary.com/dseg0uwc9/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1753953684/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/dog_icon_grxcsl.jpg',
+            },
+            quickReplyItems: [
+              {
+                imageUrl:
+                  'https://res.cloudinary.com/dseg0uwc9/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1753953684/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/dog_icon_grxcsl.jpg',
+                action: {
+                  type: 'message',
+                  label: '天氣',
+                  text: '天氣',
+                },
+              },
+              {
+                imageUrl:
+                  'https://res.cloudinary.com/dseg0uwc9/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1753953684/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/dog_icon_grxcsl.jpg',
+                action: {
+                  type: 'message',
+                  label: '天氣2',
+                  text: '天氣2',
+                },
+              },
+              {
+                imageUrl:
+                  'https://res.cloudinary.com/dseg0uwc9/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1753953684/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/dog_icon_grxcsl.jpg',
+                action: {
+                  type: 'message',
+                  label: '天氣3',
+                  text: '天氣3',
+                },
+              },
+            ],
+            actions: [
+              {
+                type: 'message',
+                label: '我是按鈕 1',
+                text: '我是按鈕 1 號',
+              },
+              {
+                type: 'message',
+                label: '我是按鈕 2',
+                text: '我是按鈕 2 號',
+              },
+              {
+                type: 'message',
+                label: '我是按鈕 3',
+                text: '我是按鈕 3 號',
+              },
+              {
+                type: 'message',
+                label: '我是按鈕～',
+                text: '我是按鈕 4 號',
+              },
+            ],
+          });
+        }
+        if (text === 'confirm') {
+          return this.lineMessageService.createTemplateConfirmMessage({
+            altText: '確認通知訊息！',
+            text: '你確定要這樣做嗎？',
+            actions: [
+              {
+                type: 'message',
+                label: '是',
+                text: '是的，我確定',
+              },
+              {
+                type: 'message',
+                label: '否',
+                text: '不是，我不要',
+              },
+            ],
+          });
+        }
+        if (text === 'carousel') {
+          return this.lineMessageService.createTemplateCarouselMessage<1>({
+            altText: '最新活動消息！！',
+            cards: [
+              {
+                text: '新生代狗狗寵物展',
+                thumbnailImageUrl:
+                  'https://res.cloudinary.com/dseg0uwc9/image/upload/v1753953684/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/dog_icon_grxcsl.jpg',
+                actions: [
+                  {
+                    type: 'message',
+                    label: '搶先第一手資訊',
+                    text: '可愛狗狗展',
+                  },
+                ],
+              },
+              {
+                text: '可愛貓貓展',
+                thumbnailImageUrl:
+                  'https://res.cloudinary.com/dseg0uwc9/image/upload/v1753953684/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/dog_icon_grxcsl.jpg',
+                actions: [
+                  {
+                    type: 'message',
+                    label: '搶先第一手資訊',
+                    text: '可愛貓貓展',
+                  },
+                ],
+              },
+            ],
+          });
+        }
+        if (text === 'imageCarousel') {
+          return this.lineMessageService.createTemplateImageCarouselMessage({
+            altText: '最新產品消息',
+            cards: [
+              {
+                imageUrl:
+                  'https://res.cloudinary.com/dseg0uwc9/image/upload/v1753953684/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/dog_icon_grxcsl.jpg',
+                action: {
+                  type: 'message',
+                  label: '狗狗商品 1 號',
+                  text: '狗狗商品 1 號',
+                },
+              },
+              {
+                imageUrl:
+                  'https://res.cloudinary.com/dseg0uwc9/image/upload/v1753953684/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/dog_icon_grxcsl.jpg',
+                action: {
+                  type: 'message',
+                  label: '狗狗商品 2 號',
+                  text: '狗狗商品 2 號',
+                },
+              },
+            ],
+          });
+        }
+        return this.lineMessageService.createTextMessage({
           text: message.text,
           emoji: {
             index: 0,
@@ -128,7 +268,8 @@ export class LineWebhookService {
               },
             },
           ],
-        }),
+        });
+      },
       sticker: () =>
         this.lineMessageService.createStickerMessage({
           packageId: '6359',

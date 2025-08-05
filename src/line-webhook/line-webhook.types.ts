@@ -9,5 +9,5 @@ export type WebhookEventHandlerMap = {
 export type MessageEventHandlerMap = {
   [K in EventMessage['type']]: (
     event: Extract<EventMessage, { type: K }>,
-  ) => Extract<Message, { type: K }>;
+  ) => Message;
 };

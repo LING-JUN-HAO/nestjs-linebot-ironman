@@ -11,4 +11,8 @@ export enum MessageType {
   Location = 'location',
   ImageMap = 'imagemap',
   Template = 'template',
+  TemplateButton = 'buttons',
+  TemplateConfirm = 'confirm',
+  TemplateCarousel = 'carousel',
+  TemplateImageCarousel = 'image_carousel',
 }
