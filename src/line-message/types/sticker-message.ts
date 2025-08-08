@@ -1,3 +1,5 @@
+import { MessageCommon } from './message-common';
+
 /**
  * LINE Sticker Package IDs
  * - Moon: Special Edition（日文: ムーンスペシャル）— 446
@@ -11,8 +13,6 @@
  * - LINE Characters: Making Amends（繁體中文: LINE卡通明星（專業道歉篇））— 6632
  * - LINE Characters: Pretty Phrases（日文: ゆる敬語★LINEキャラクターズ）— 8515
  */
-
-import { QuickReplyItem, Sender } from '@line/bot-sdk';
 
 export const stickerIds = [
   {
@@ -61,14 +61,13 @@ export type StickerMap = {
   [K in (typeof stickerIds)[number]['packageId']]: Extract<
     (typeof stickerIds)[number],
     { packageId: K }
-  >['stickerIds'][number][];
+  >['stickerIds'][number];
 };
 
-export type StickerMessageReq = {
-  [K in keyof StickerMap]: {
-    packageId: K;
-    stickerId: StickerMap[K][number];
-    sender?: Sender;
-    quickReplyItems?: Omit<QuickReplyItem, 'type'>[];
-  };
-}[keyof StickerMap];
+export type StickerMessageReq = MessageCommon &
+  {
+    [K in keyof StickerMap]: {
+      packageId: K;
+      stickerId: StickerMap[K];
+    };
+  }[keyof StickerMap];

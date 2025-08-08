@@ -1,10 +1,8 @@
-import { QuickReplyItem, Sender } from '@line/bot-sdk';
+import { MessageCommon } from './message-common';
 
 type HttpsURL = `https://${string}`;
 
-export type VideoMessageReq = {
+export type VideoMessageReq = MessageCommon & {
   originalContentUrl: HttpsURL;
   previewImageUrl: HttpsURL;
-  sender?: Sender;
-  quickReplyItems?: Omit<QuickReplyItem, 'type'>[];
 };

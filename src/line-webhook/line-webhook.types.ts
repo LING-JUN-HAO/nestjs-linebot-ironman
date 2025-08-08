@@ -1,4 +1,5 @@
-import { WebhookEvent, EventMessage, Message } from '@line/bot-sdk';
+import { WebhookEvent, EventMessage } from '@line/bot-sdk';
+import { Message } from '@line/bot-sdk/lib/messaging-api/model/message';
 
 export type WebhookEventHandlerMap = {
   [K in WebhookEvent['type']]: (

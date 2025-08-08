@@ -9,6 +9,7 @@ import {
   TemplateMessage,
   Sender,
   QuickReplyItem,
+  ImageMapMessage,
 } from '@line/bot-sdk';
 import { MessageType } from './types/enum';
 import {
@@ -23,6 +24,7 @@ import {
   TemplateConfirmMessageReq,
   TemplateCarouselMessageReq,
   TemplateImageCarouselMessageReq,
+  ImageMapMessageReq,
 } from './types';
 
 @Injectable()
@@ -374,5 +376,32 @@ export class LineMessageService {
       ...this.buildCommonMessageProps(sender, quickReplyItems),
     };
     return templateImageCarouselMessage;
+  }
+
+  createImageMapMessage(imageMapMessageReq: ImageMapMessageReq) {
+    const {
+      baseUrl,
+      altText,
+      baseSize = {
+        width: 1040,
+        height: 1040,
+      },
+      actions,
+      sender,
+      quickReplyItems,
+      video,
+    } = imageMapMessageReq;
+
+    const imageMapMessage: ImageMapMessage = {
+      type: MessageType.ImageMap,
+      baseUrl,
+      altText,
+      baseSize,
+      actions,
+      ...(video && { video }),
+      ...this.buildCommonMessageProps(sender, quickReplyItems),
+    };
+
+    return imageMapMessage;
   }
 }

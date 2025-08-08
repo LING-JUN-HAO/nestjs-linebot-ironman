@@ -1,10 +1,8 @@
-import { QuickReplyItem, Sender } from '@line/bot-sdk';
+import { MessageCommon } from './message-common';
 
 type HttpsURL = `https://${string}`;
 
-export type AudioMessageReq = {
+export type AudioMessageReq = MessageCommon & {
   originalContentUrl: HttpsURL;
   duration: number;
-  sender?: Sender;
-  quickReplyItems?: Omit<QuickReplyItem, 'type'>[];
 };

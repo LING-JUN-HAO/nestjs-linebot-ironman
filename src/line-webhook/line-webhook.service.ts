@@ -5,7 +5,9 @@ import {
   UnfollowEvent,
   MessageEvent,
   WebhookRequestBody,
+  EventMessage,
 } from '@line/bot-sdk';
+import { Message } from '@line/bot-sdk/lib/messaging-api/model/message';
 import { Inject, Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 import { LINE_CONFIG } from 'src/line-webhook/line-webhook.provider';
@@ -227,6 +229,41 @@ export class LineWebhookService {
             ],
           });
         }
+        if (text === 'imageMap') {
+          return this.lineMessageService.createImageMapMessage({
+            baseUrl:
+              'https://linebot-imagemap.qd513020.workers.dev/Line_ImageMap_Message_video_%E8%A8%AD%E8%A8%88_g4oh3d/png',
+            altText: '背單字提醒！',
+            video: {
+              previewImageUrl:
+                'https://linebot-imagemap.qd513020.workers.dev/Line_ImageMap_Message_video_%E8%A8%AD%E8%A8%88_g4oh3d/png/1040',
+              originalContentUrl:
+                'https://res.cloudinary.com/dseg0uwc9/video/upload/v1753430100/test_video_fyraxr.mp4',
+              area: {
+                x: 0,
+                y: 0,
+                width: 1040,
+                height: 1040,
+              },
+              externalLink: {
+                label: '點我領取相關資訊',
+                linkUri: 'https://google.com.tw/',
+              },
+            },
+            actions: [
+              {
+                type: 'message',
+                area: {
+                  x: 0,
+                  y: 0,
+                  width: 1040,
+                  height: 1040,
+                },
+                text: '請至行動裝置上查看影片內容！',
+              },
+            ],
+          });
+        }
         return this.lineMessageService.createTextMessage({
           text: message.text,
           emoji: {
@@ -272,8 +309,8 @@ export class LineWebhookService {
       },
       sticker: () =>
         this.lineMessageService.createStickerMessage({
-          packageId: '6359',
-          stickerId: '11069851',
+          packageId: '6370',
+          stickerId: '11088018',
         }),
       image: () =>
         this.lineMessageService.createImageMessage({
@@ -302,11 +339,12 @@ export class LineWebhookService {
           latitude: 24.1815183,
           longitude: 120.5899484,
         }),
-    } satisfies Partial<MessageEventHandlerMap>;
+    } satisfies Partial<MessageEventHandlerMap>; // 這部分主要是因為目前沒有處理 file 事件
 
-    let replyMessage;
-    const handler = messageEventHandlerMap[event.message.type];
-    if (handler) replyMessage = handler(event.message);
+    const handler: (message: EventMessage) => Message =
+      messageEventHandlerMap[event.message.type];
+
+    const replyMessage = handler(event.message);
 
     await this.lineClient.replyMessage({
       replyToken: event.replyToken,

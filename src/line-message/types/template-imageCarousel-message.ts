@@ -1,8 +1,7 @@
-import { QuickReplyItem, Sender, TemplateImageColumn } from '@line/bot-sdk';
+import { TemplateImageColumn } from '@line/bot-sdk';
+import { MessageCommon } from './message-common';
 
-export type TemplateImageCarouselMessageReq = {
+export type TemplateImageCarouselMessageReq = MessageCommon & {
   altText: string;
   cards: TemplateImageColumn[];
-  sender?: Sender;
-  quickReplyItems?: Omit<QuickReplyItem, 'type'>[];
 };

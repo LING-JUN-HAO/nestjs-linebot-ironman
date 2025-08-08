@@ -1,9 +1,8 @@
-import { Action, QuickReplyItem, Sender } from '@line/bot-sdk';
+import { Action } from '@line/bot-sdk';
+import { MessageCommon } from './message-common';
 
-export type TemplateConfirmMessageReq = {
+export type TemplateConfirmMessageReq = MessageCommon & {
   altText: string;
   text: string;
   actions: [Action, Action];
-  sender?: Sender;
-  quickReplyItems?: Omit<QuickReplyItem, 'type'>[];
 };

@@ -1,10 +1,8 @@
-import { QuickReplyItem, Sender } from '@line/bot-sdk';
+import { MessageCommon } from './message-common';
 
-export type LocationMessageReq = {
+export type LocationMessageReq = MessageCommon & {
   title: string;
   address: string;
   latitude: number;
   longitude: number;
-  sender?: Sender;
-  quickReplyItems?: Omit<QuickReplyItem, 'type'>[];
 };

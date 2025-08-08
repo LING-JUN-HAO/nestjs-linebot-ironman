@@ -1,13 +1,12 @@
-import { Action, QuickReplyItem, Sender } from '@line/bot-sdk';
+import { Action } from '@line/bot-sdk';
+import { MessageCommon } from './message-common';
 
 type HttpsURL = `https://${string}`;
 
-export type TemplateButtonMessageReq = {
+export type TemplateButtonMessageReq = MessageCommon & {
   altText: string;
   text: string;
   actions: Action[];
   title?: string;
   thumbnailImageUrl?: HttpsURL;
-  sender?: Sender;
-  quickReplyItems?: Omit<QuickReplyItem, 'type'>[];
 };

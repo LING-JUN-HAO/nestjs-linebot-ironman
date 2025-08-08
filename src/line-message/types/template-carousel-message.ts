@@ -1,4 +1,5 @@
-import { QuickReplyItem, Sender, TemplateColumn } from '@line/bot-sdk';
+import { TemplateColumn } from '@line/bot-sdk';
+import { MessageCommon } from './message-common';
 
 type FixedArray<T, N extends number> = T[] & { length: N };
 
@@ -9,9 +10,8 @@ type LimitedActionColumn<N extends number> = Omit<
   actions: FixedArray<TemplateColumn['actions'][number], N>;
 };
 
-export type TemplateCarouselMessageReq<N extends number = number> = {
-  altText: string;
-  cards: LimitedActionColumn<N>[];
-  sender?: Sender;
-  quickReplyItems?: Omit<QuickReplyItem, 'type'>[];
-};
+export type TemplateCarouselMessageReq<N extends number = number> =
+  MessageCommon & {
+    altText: string;
+    cards: LimitedActionColumn<N>[];
+  };

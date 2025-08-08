@@ -1,4 +1,4 @@
-import { Sender, QuickReplyItem } from '@line/bot-sdk';
+import { MessageCommon } from './message-common';
 
 /**
  * LINE Emoji IDs(可用 ID：001 ~ 009)
@@ -35,13 +35,11 @@ type ProjectIds = [
   '5ac21c9a031a6752fb806d65',
 ];
 
-export interface TextMessageReq {
+export type TextMessageReq = MessageCommon & {
   text: string;
   emoji?: {
     index: number;
     productId: ProjectIds[number];
     emojiId: Emojis[number];
   };
-  sender?: Sender;
-  quickReplyItems?: Omit<QuickReplyItem, 'type'>[];
-}
+};
