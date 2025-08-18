@@ -1,16 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import {
-  TextMessage,
   StickerMessage,
   ImageMessage,
   VideoMessage,
   AudioMessage,
   LocationMessage,
-  TemplateMessage,
   Sender,
   QuickReplyItem,
   ImageMapMessage,
 } from '@line/bot-sdk';
+import {
+  TextMessage,
+  FlexMessage,
+  TemplateMessage,
+} from '@line/bot-sdk/lib/messaging-api/model/models';
 import { MessageType } from './types/enum';
 import {
   TextMessageReq,
@@ -25,6 +28,7 @@ import {
   TemplateCarouselMessageReq,
   TemplateImageCarouselMessageReq,
   ImageMapMessageReq,
+  FlexMessageReq,
 } from './types';
 
 @Injectable()
@@ -403,5 +407,18 @@ export class LineMessageService {
     };
 
     return imageMapMessage;
+  }
+
+  createFlexMessage(flexMessageReq: FlexMessageReq): FlexMessage {
+    const { altText, contents, sender, quickReplyItems } = flexMessageReq;
+
+    const flexMessage: FlexMessage = {
+      type: MessageType.Flex,
+      altText,
+      contents,
+      ...this.buildCommonMessageProps(sender, quickReplyItems),
+    };
+
+    return flexMessage;
   }
 }
