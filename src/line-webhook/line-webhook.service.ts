@@ -264,7 +264,7 @@ export class LineWebhookService {
             ],
           });
         }
-        if (text === 'flex') {
+        if (text === 'flex-bubble') {
           return this.lineMessageService.createFlexMessage({
             altText: 'Antonio 電子名片',
             contents: {
@@ -437,6 +437,239 @@ export class LineWebhookService {
                   backgroundColor: '#003366',
                 },
               },
+            },
+          });
+        }
+        if (text === 'flex-carousel') {
+          return this.lineMessageService.createFlexMessage({
+            altText: 'Antonio 私人食譜',
+            contents: {
+              type: 'carousel',
+              contents: [
+                {
+                  type: 'bubble',
+                  hero: {
+                    type: 'box',
+                    layout: 'vertical',
+                    contents: [
+                      {
+                        type: 'image',
+                        url: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?q=80&w=1013&auto=format&fit=crop&ixlib=rb-4.1.0',
+                        size: 'full',
+                        aspectRatio: '4:3',
+                        aspectMode: 'cover',
+                      },
+                      {
+                        type: 'box',
+                        layout: 'vertical',
+                        contents: [
+                          {
+                            type: 'text',
+                            text: '開胃菜',
+                            color: '#FFFFFF',
+                            weight: 'bold',
+                            size: 'sm',
+                          },
+                        ],
+                        position: 'absolute',
+                        background: {
+                          type: 'linearGradient',
+                          angle: '0deg',
+                          startColor: '#FF8C42',
+                          endColor: '#FF8C42',
+                        },
+                        offsetTop: 'md',
+                        offsetStart: 'md',
+                        paddingAll: '8px',
+                        cornerRadius: 'md',
+                      },
+                    ],
+                    paddingAll: '0px',
+                  },
+                  body: {
+                    type: 'box',
+                    layout: 'vertical',
+                    contents: [
+                      {
+                        type: 'text',
+                        text: '香煎馬鈴薯佐羅勒',
+                        weight: 'bold',
+                        size: 'lg',
+                        align: 'center',
+                        wrap: true,
+                        margin: 'md',
+                      },
+                      {
+                        type: 'text',
+                        text: '金黃酥脆的開胃小食，完美的聚餐開場',
+                        size: 'sm',
+                        color: '#666666',
+                        align: 'center',
+                        wrap: true,
+                        margin: 'sm',
+                      },
+                    ],
+                    paddingAll: 'lg',
+                  },
+                  footer: {
+                    type: 'box',
+                    layout: 'vertical',
+                    contents: [
+                      {
+                        type: 'button',
+                        style: 'primary',
+                        color: '#00C851',
+                        action: {
+                          type: 'uri',
+                          label: '查看食譜',
+                          uri: 'https://unsplash.com/',
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  type: 'bubble',
+                  hero: {
+                    type: 'box',
+                    layout: 'vertical',
+                    contents: [
+                      {
+                        type: 'image',
+                        url: 'https://images.unsplash.com/photo-1606850780382-055f975552aa?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0',
+                        size: 'full',
+                        aspectRatio: '4:3',
+                        aspectMode: 'cover',
+                      },
+                      {
+                        type: 'box',
+                        layout: 'vertical',
+                        contents: [
+                          {
+                            type: 'text',
+                            text: '開胃菜',
+                            color: '#FFFFFF',
+                            weight: 'bold',
+                            size: 'sm',
+                          },
+                        ],
+                        position: 'absolute',
+                        background: {
+                          type: 'linearGradient',
+                          angle: '0deg',
+                          startColor: '#FF8C42',
+                          endColor: '#FF8C42',
+                        },
+                        offsetTop: 'md',
+                        offsetStart: 'md',
+                        paddingAll: '8px',
+                        cornerRadius: 'md',
+                      },
+                    ],
+                    paddingAll: '0px',
+                  },
+                  body: {
+                    type: 'box',
+                    layout: 'vertical',
+                    contents: [
+                      {
+                        type: 'text',
+                        text: '香辣蔬食燉飯',
+                        weight: 'bold',
+                        size: 'lg',
+                        align: 'center',
+                        wrap: true,
+                        margin: 'md',
+                      },
+                      {
+                        type: 'text',
+                        text: '豐富蔬菜與香料的完美組合，溫暖你的味蕾',
+                        size: 'sm',
+                        color: '#666666',
+                        align: 'center',
+                        wrap: true,
+                        margin: 'sm',
+                      },
+                    ],
+                    paddingAll: 'lg',
+                  },
+                  footer: {
+                    type: 'box',
+                    layout: 'vertical',
+                    contents: [
+                      {
+                        type: 'button',
+                        style: 'primary',
+                        color: '#00C851',
+                        action: {
+                          type: 'uri',
+                          label: '查看食譜',
+                          uri: 'https://unsplash.com/',
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  type: 'bubble',
+                  hero: {
+                    type: 'box',
+                    layout: 'vertical',
+                    contents: [
+                      {
+                        type: 'image',
+                        url: 'https://images.unsplash.com/photo-1495546968767-f0573cca821e?q=80&w=1331&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                        size: 'full',
+                        aspectRatio: '4:3',
+                        aspectMode: 'cover',
+                        backgroundColor: '#F8F9FA',
+                      },
+                    ],
+                    paddingAll: '0px',
+                  },
+                  body: {
+                    type: 'box',
+                    layout: 'vertical',
+                    contents: [
+                      {
+                        type: 'text',
+                        text: '更多食譜與料理靈感',
+                        weight: 'bold',
+                        size: 'lg',
+                        align: 'center',
+                        wrap: true,
+                        margin: 'md',
+                      },
+                      {
+                        type: 'text',
+                        text: '到我的網站探索更多美味內容',
+                        size: 'sm',
+                        color: '#666666',
+                        align: 'center',
+                        wrap: true,
+                        margin: 'sm',
+                      },
+                    ],
+                    paddingAll: 'lg',
+                  },
+                  footer: {
+                    type: 'box',
+                    layout: 'vertical',
+                    contents: [
+                      {
+                        type: 'button',
+                        style: 'primary',
+                        color: '#FF8C42',
+                        action: {
+                          type: 'uri',
+                          label: '前往個人部落格',
+                          uri: 'https://unsplash.com/',
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
             },
           });
         }
