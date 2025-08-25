@@ -5,6 +5,7 @@ import { LineMiddleware } from './middleware/line.middleware';
 import { LineWebhookModule } from './line-webhook/line-webhook.module';
 import { getLoggerModuleConfig } from 'config/logger.config';
 import { LineMessageModule } from './line-message/line-message.module';
+import { HeartbeatController } from './heartbeat/heartbeat.controller';
 import configuration from 'config/configuration';
 
 @Module({
@@ -20,6 +21,7 @@ import configuration from 'config/configuration';
     LineWebhookModule,
     LineMessageModule,
   ],
+  controllers: [HeartbeatController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
