@@ -47,6 +47,9 @@ dependencies:
   pino-http:
     specifier: ^10.5.0
     version: 10.5.0
+  pino-loki:
+    specifier: ^2.6.0
+    version: 2.6.0
   pino-pretty:
     specifier: ^13.0.0
     version: 13.0.0
@@ -4929,6 +4932,14 @@ packages:
       pino: 9.7.0
       pino-std-serializers: 7.0.0
       process-warning: 5.0.0
+    dev: false
+
+  /pino-loki@2.6.0:
+    resolution: {integrity: sha512-Qy+NeIdb0YmZe/M5mgnO5aGaAyVaeqgwn45T6VajhRXZlZVfGe1YNYhFa9UZyCeNFAPGaUkD2e9yPGjx+2BBYA==}
+    hasBin: true
+    dependencies:
+      pino-abstract-transport: 2.0.0
+      pump: 3.0.3
     dev: false
 
   /pino-pretty@13.0.0:

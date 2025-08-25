@@ -6,6 +6,9 @@ import { v4 as uuidv4 } from 'uuid';
 // 匯出工廠函數給 app.module.ts 使用
 export const getLoggerModuleConfig = (configService: ConfigService): Params => {
   const nodeEnv = configService.get<string>('NODE_ENV');
+  const lokiUrl = configService.get<string>('LOKI_URL');
+  const lokiUser = configService.get<string>('LOKI_USER');
+  const lokiPassword = configService.get<string>('LOKI_PASSWORD');
 
   return {
     pinoHttp: {
@@ -27,10 +30,11 @@ export const getLoggerModuleConfig = (configService: ConfigService): Params => {
       // 自定義 HTTP 請求失敗顯示訊息方式
       customErrorMessage: (req, res, err) =>
         `❌ ${req.method} ${req.url} failed: ${err?.message}`,
-      // 開發環境專用 pino-pretty 美化 log 輸出
+      // 日誌輸出配置
       transport:
         nodeEnv !== 'production'
           ? {
+              // 開發環境專用 pino-pretty 美化 log 輸出
               target: 'pino-pretty',
               options: {
                 colorize: true, // 顏色輸出
@@ -42,7 +46,28 @@ export const getLoggerModuleConfig = (configService: ConfigService): Params => {
                 levelFirst: true, // 日誌等級在最前面
               },
             }
-          : undefined,
+          : {
+              targets: [
+                {
+                  target: 'pino/file',
+                  options: {
+                    destination: 1,
+                  },
+                },
+                {
+                  target: 'pino-loki',
+                  options: {
+                    interval: 10,
+                    labels: { app: 'nestjs-test' },
+                    host: lokiUrl,
+                    basicAuth: {
+                      username: lokiUser,
+                      password: lokiPassword,
+                    },
+                  },
+                },
+              ],
+            },
     },
   };
 };

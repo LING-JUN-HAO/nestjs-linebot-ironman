@@ -24,10 +24,26 @@ const configSchema = Joi.object({
     apiSecret: Joi.string().required(), // Cloudinary API Secret (字串且必填)
   }).required(), // 必填
 
+  // Loki 日誌系統相關設定
+  loki: Joi.object({
+    url: Joi.string().uri().when(Joi.ref('/nodeEnv'), {
+      is: 'production',
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    }),
+    user: Joi.string().when(Joi.ref('/nodeEnv'), {
+      is: 'production',
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    }),
+    password: Joi.string().when(Joi.ref('/nodeEnv'), {
+      is: 'production',
+      then: Joi.required(),
+      otherwise: Joi.optional(),
+    }),
+  }).optional(),
+
   // 伺服器基本設定
-  nodeEnv: Joi.string()
-    .valid('development', 'production', 'test') // 僅能從這些值中選擇
-    .default('development'), // 預設值是 development(如果未設定的情況下套用)
   port: Joi.number().port().default(3000), // 數字且是有效的端口號，預設值是 3000
 });
 
@@ -58,8 +74,14 @@ export default () => {
       apiSecret: process.env.CLOUDINARY_API_SECRET,
     },
 
+    // Loki 日誌系統相關設定
+    loki: {
+      url: process.env.LOKI_URL,
+      user: process.env.LOKI_USER,
+      password: process.env.LOKI_PASSWORD,
+    },
+
     // 伺服器基本設定
-    nodeEnv: process.env.NODE_ENV,
     port: process.env.PORT,
   };
 
