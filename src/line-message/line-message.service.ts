@@ -7,6 +7,7 @@ import {
   AudioMessage,
   LocationMessage,
 } from '@line/bot-sdk';
+import { TextMessageV2 } from '@line/bot-sdk/lib/messaging-api/model/models';
 import { MessageType } from './types/enum';
 import {
   TextMessageReq,
@@ -20,7 +21,7 @@ import {
 @Injectable()
 export class LineMessageService {
   /**
-   * 發送文字訊息
+   * 發送文字訊息 v1 版本
    * 詳細的 Emoji 可以使用的 ID 可以參照：{@link https://developers.line.biz/en/docs/messaging-api/emoji-list/#line-emoji-definitions}
    *
    * @param {TextMessageReq} textMessageReq - 文字訊息請求對象
@@ -56,6 +57,40 @@ export class LineMessageService {
             emojiId: emoji.emojiId,
           },
         ],
+      }),
+    };
+
+    return textMessage;
+  }
+
+  /**
+   * 發送文字訊息 v2 版本
+   * 詳細的 Emoji 可以使用的 ID 可以參照：{@link https://developers.line.biz/en/docs/messaging-api/emoji-list/#line-emoji-definitions}
+   *
+   * @param {TextMessageReq} textMessageReq - 文字訊息請求對象
+   * @param {string} textMessageReq.text - 要發送的文字內容
+   * @param textMessageReq.emoji - 可選的表情符號配置
+   * @param {number} textMessageReq.emoji.index - 表情符號要插入的位置
+   * @param {string} textMessageReq.emoji.productId - 表情符號系列 ID，例如 '5ac1bf65040ab15980c9b435'
+   * @param {string} textMessageReq.emoji.emojiId - 表情符號 ID，例如 '001'
+   * @see https://developers.line.biz/en/reference/messaging-api/#text-message-v2
+   */
+  createTextMessageV2(textMessageReq: TextMessageReq): TextMessageV2 {
+    const { text, emoji } = textMessageReq;
+
+    const modifiedText = `{laugh} ${text} {laugh}`;
+
+    const textMessage: TextMessageV2 = {
+      type: MessageType.TextV2,
+      text: modifiedText,
+      ...(emoji && {
+        substitution: {
+          laugh: {
+            type: 'emoji',
+            productId: emoji.productId,
+            emojiId: emoji.emojiId,
+          },
+        },
       }),
     };
 

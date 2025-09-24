@@ -3,6 +3,7 @@
  */
 export enum MessageType {
   Text = 'text',
+  TextV2 = 'textV2',
   Sticker = 'sticker',
   Image = 'image',
   Video = 'video',

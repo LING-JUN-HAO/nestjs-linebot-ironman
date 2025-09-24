@@ -87,10 +87,10 @@ export class LineWebhookService {
   private async handleMessageEvent(event: MessageEvent): Promise<void> {
     const messageEventHandlerMap = {
       text: (message) =>
-        this.lineMessageService.createTextMessage({
+        this.lineMessageService.createTextMessageV2({
           text: message.text,
           emoji: {
-            index: 0,
+            index: 10,
             productId: '5ac21c4e031a6752fb806d5b',
             emojiId: '006',
           },
