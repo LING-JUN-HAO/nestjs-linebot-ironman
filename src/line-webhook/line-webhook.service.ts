@@ -144,22 +144,22 @@ export class LineWebhookService {
       video: () =>
         this.lineMessageService.createVideoMessage({
           previewImageUrl:
-            'https://res.cloudinary.com/dseg0uwc9/image/upload/e_improve,w_300,h_600,c_thumb,g_auto/v1752220479/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/569400541533438471.jpg',
+            'https://res.cloudinary.com/dseg0uwc9/image/upload/v1758793097/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/Day%2012%EF%BC%9ALINE%20Bot%20%E5%AA%92%E9%AB%94%E8%A8%8A%E6%81%AF%E8%99%95%E7%90%86%E8%88%87%E4%BA%92%E5%8B%95%E9%AB%94%E9%A9%97%E5%84%AA%E5%8C%96%20-%20Sender%20%E5%AE%A2%E8%A3%BD%E5%8C%96%E5%8F%8A%20Quick%20Reply/LINE_%E6%B0%B4%E5%A3%BA%E9%A0%90%E8%A6%BD%E5%9C%96%E7%89%87_ahy1wu.jpg',
           originalContentUrl:
-            'https://res.cloudinary.com/dseg0uwc9/video/upload/v1753430100/test_video_fyraxr.mp4',
+            'https://res.cloudinary.com/dseg0uwc9/video/upload/v1758792999/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/Day%2012%EF%BC%9ALINE%20Bot%20%E5%AA%92%E9%AB%94%E8%A8%8A%E6%81%AF%E8%99%95%E7%90%86%E8%88%87%E4%BA%92%E5%8B%95%E9%AB%94%E9%A9%97%E5%84%AA%E5%8C%96%20-%20Sender%20%E5%AE%A2%E8%A3%BD%E5%8C%96%E5%8F%8A%20Quick%20Reply/%E6%B8%AC%E8%A9%A6%E6%B0%B4%E5%A3%BA%E5%BD%B1%E7%89%87_fl70s9.mp4',
         }),
       audio: () =>
         this.lineMessageService.createAudioMessage({
           originalContentUrl:
-            'https://res.cloudinary.com/dseg0uwc9/video/upload/v1740070405/%E9%90%B5%E4%BA%BA%E8%B3%BD%E8%A6%81%E5%A4%9A%E4%B9%85_pgkjr2.m4a',
-          duration: 11000,
+            'https://res.cloudinary.com/dseg0uwc9/video/upload/v1758793412/2025%20IT%20%E9%90%B5%E4%BA%BA%E8%B3%BD/Day%2012%EF%BC%9ALINE%20Bot%20%E5%AA%92%E9%AB%94%E8%A8%8A%E6%81%AF%E8%99%95%E7%90%86%E8%88%87%E4%BA%92%E5%8B%95%E9%AB%94%E9%A9%97%E5%84%AA%E5%8C%96%20-%20Sender%20%E5%AE%A2%E8%A3%BD%E5%8C%96%E5%8F%8A%20Quick%20Reply/%E6%B8%AC%E8%A9%A6%E9%8C%84%E9%9F%B3_rdozer.mp4',
+          duration: 1000,
         }),
       location: () =>
         this.lineMessageService.createLocationMessage({
-          title: '東海小確幸黑糖鮮奶波霸（東海總店）',
-          address: '434台中市龍井區台灣大道五段3巷66號',
-          latitude: 24.1815183,
-          longitude: 120.5899484,
+          title: '臺中都會公園',
+          address: '407台中市西屯區都會園路1215巷140號',
+          latitude: 24.208202556409745,
+          longitude: 120.5978843115818,
         }),
     } satisfies Partial<MessageEventHandlerMap>;
 
