@@ -12,6 +12,7 @@ import {
 import {
   TextMessage,
   FlexMessage,
+  CouponMessage,
   TemplateMessage,
 } from '@line/bot-sdk/lib/messaging-api/model/models';
 import { MessageType } from './types/enum';
@@ -29,6 +30,7 @@ import {
   TemplateImageCarouselMessageReq,
   ImageMapMessageReq,
   FlexMessageReq,
+  CouponMessageReq,
 } from './types';
 
 @Injectable()
@@ -420,5 +422,16 @@ export class LineMessageService {
     };
 
     return flexMessage;
+  }
+
+  createCouponMessage(couponMessageReq: CouponMessageReq): CouponMessage {
+    const { couponId, deliveryTag, sender, quickReplyItems } = couponMessageReq;
+    const couponMessage: CouponMessage = {
+      type: 'coupon',
+      couponId,
+      ...(deliveryTag && { deliveryTag }),
+      ...this.buildCommonMessageProps(sender, quickReplyItems),
+    };
+    return couponMessage;
   }
 }

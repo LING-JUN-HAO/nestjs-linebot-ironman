@@ -10,4 +10,5 @@ export * from './template-confirm-message';
 export * from './template-carousel-message';
 export * from './template-imageCarousel-message';
 export * from './imageMap-message';
+export * from './coupon-message';
 export * from './flex-message';

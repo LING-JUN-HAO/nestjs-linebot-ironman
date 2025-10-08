@@ -673,6 +673,12 @@ export class LineWebhookService {
             },
           });
         }
+        if (text === 'coupon') {
+          const couponId = '01K726M3DSTXFVMJCK50YYXTTA';
+          return this.lineMessageService.createCouponMessage({
+            couponId,
+          });
+        }
         return this.lineMessageService.createTextMessage({
           text: message.text,
           emoji: {

@@ -27,7 +27,7 @@
     }
   },
   "dependencies": {
-    "@line/bot-sdk": "^10.0.0",
+    "@line/bot-sdk": "10.3.0",
     "@nestjs/axios": "^4.0.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^4.0.2",
