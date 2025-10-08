@@ -674,7 +674,7 @@ export class LineWebhookService {
           });
         }
         if (text === 'coupon') {
-          const couponId = '01K726M3DSTXFVMJCK50YYXTTA';
+          const couponId = '01K71AC6CFKC0130P28PHVQ2WJ';
           return this.lineMessageService.createCouponMessage({
             couponId,
           });
