@@ -6,6 +6,10 @@ import {
   MessageEvent,
   WebhookRequestBody,
   EventMessage,
+  JoinEvent,
+  LeaveEvent,
+  MemberJoinEvent,
+  MemberLeaveEvent,
 } from '@line/bot-sdk';
 import { Message } from '@line/bot-sdk/lib/messaging-api/model/message';
 import { Inject, Injectable } from '@nestjs/common';
@@ -53,6 +57,10 @@ export class LineWebhookService {
       message: (event) => this.handleMessageEvent(event),
       follow: (event) => this.handleFollowEvent(event),
       unfollow: (event) => this.handleUnfollowEvent(event),
+      join: (event) => this.handleJoinEvent(event),
+      leave: (event) => this.handleLeaveEvent(event),
+      memberJoined: (event) => this.handleMemberJoinedEvent(event),
+      memberLeft: (event) => this.handleMemberLeftEvent(event),
     } satisfies Partial<WebhookEventHandlerMap>;
 
     for (const event of events) {
@@ -754,6 +762,10 @@ export class LineWebhookService {
           latitude: 24.1815183,
           longitude: 120.5899484,
         }),
+      file: () =>
+        this.lineMessageService.createTextMessage({
+          text: '收到檔案囉，但目前還不支援喔～',
+        }),
     } satisfies Partial<MessageEventHandlerMap>; // 這部分主要是因為目前沒有處理 file 事件
 
     const handler: (message: EventMessage) => Message =
@@ -765,5 +777,49 @@ export class LineWebhookService {
       replyToken: event.replyToken,
       messages: [replyMessage],
     });
+  }
+
+  /** 機器人被邀請加入群組或聊天室時觸發
+   * @param event 加入事件
+   */
+  private async handleJoinEvent(event: JoinEvent): Promise<void> {
+    const replyMessage = this.lineMessageService.createTextMessage({
+      text: '機器人已加入群組或聊天室，請多指教！',
+    });
+
+    await this.lineClient.replyMessage({
+      replyToken: event.replyToken,
+      messages: [replyMessage],
+    });
+  }
+
+  /** 機器人被移出群組或聊天室時觸發
+   * @param event 離開事件
+   */
+  private async handleLeaveEvent(event: LeaveEvent): Promise<void> {
+    const { source } = event;
+    console.log(`機器人已離開群組或聊天室 ${JSON.stringify(source)}`);
+  }
+
+  /** 有新成員加入群組或聊天室時觸發
+   * @param event 成員加入事件
+   */
+  private async handleMemberJoinedEvent(event: MemberJoinEvent): Promise<void> {
+    const replyMessage = this.lineMessageService.createTextMessage({
+      text: '歡迎新成員加入！',
+    });
+
+    await this.lineClient.replyMessage({
+      replyToken: event.replyToken,
+      messages: [replyMessage],
+    });
+  }
+
+  /** 有成員離開群組或聊天室時觸發
+   * @param event 成員離開事件
+   */
+  private async handleMemberLeftEvent(event: MemberLeaveEvent): Promise<void> {
+    const { left } = event;
+    console.log(`成員已離開：${JSON.stringify(left)}`);
   }
 }
