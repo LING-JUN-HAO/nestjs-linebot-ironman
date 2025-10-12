@@ -9,6 +9,8 @@ const configSchema = Joi.object({
   line: Joi.object({
     channelAccessToken: Joi.string().required(), // 字串且必填
     channelSecret: Joi.string().required(), // 字串且必填
+    loginChannelId: Joi.string().required(),
+    loginVerifyUrl: Joi.string().uri().required(),
   }).required(), // 必填
 
   // OpenWeatherMap 相關設定
@@ -16,6 +18,12 @@ const configSchema = Joi.object({
     baseUrl: Joi.string().uri().required(), // uri 格式且必填
     apiKey: Joi.string().required(), // 字串且必填
   }).required(), // 必填
+
+  // Supabase 相關設定
+  supabase: Joi.object({
+    url: Joi.string().uri().required(),
+    serviceRoleKey: Joi.string().required(),
+  }).required(),
 
   // Cloudinary 相關設定
   cloudinary: Joi.object({
@@ -59,6 +67,8 @@ export default () => {
     line: {
       channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
       channelSecret: process.env.LINE_CHANNEL_SECRET,
+      loginChannelId: process.env.LINE_LOGIN_CLIENT_ID,
+      loginVerifyUrl: process.env.LINE_LOGIN_VERIFY_URL,
     },
 
     // OpenWeatherMap 相關設定
@@ -72,6 +82,11 @@ export default () => {
       cloudName: process.env.CLOUDINARY_CLOUD_NAME,
       apiKey: process.env.CLOUDINARY_API_KEY,
       apiSecret: process.env.CLOUDINARY_API_SECRET,
+    },
+
+    supabase: {
+      url: process.env.SUPABASE_URL,
+      serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
     },
 
     // Loki 日誌系統相關設定

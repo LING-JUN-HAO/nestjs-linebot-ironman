@@ -7,6 +7,7 @@ import { getLoggerModuleConfig } from 'config/logger.config';
 import { LineMessageModule } from './line-message/line-message.module';
 import { HeartbeatController } from './heartbeat/heartbeat.controller';
 import configuration from 'config/configuration';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import configuration from 'config/configuration';
     }),
     LineWebhookModule,
     LineMessageModule,
+    UserModule,
   ],
   controllers: [HeartbeatController],
 })
